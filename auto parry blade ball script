@@ -1,0 +1,36 @@
+local Library = loadstring(game:HttpGet("https://[Log in to view URL]"))()
+local Window = Library.CreateLib("blade ball script", "Ocean")
+
+
+local Main = Window:NewTab("Main")
+local MainSection = Main:NewSection("Main")
+
+
+MainSection:NewButton("AutoParry", "it Auto Parry The Ball", function()
+local Players = game:GetService("Players")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+local Player = Players.LocalPlayer or Players.PlayerAdded:Wait()
+local Balls = workspace:WaitForChild("Balls", 9e9)
+
+local function VerifyBall(Ball)
+    if typeof(Ball) == "Instance" and Ball:IsA("BasePart") and Ball:IsDescendantOf(Balls) and Ball:GetAttribute("realBall") == true then
+        return true
+    end
+end
+
+local function IsTarget()
+    return (Player.Character and Player.Character:FindFirstChild("Highlight"))
+end
+
+local function Parry()
+    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, true, game, 0)
+    VirtualInputManager:SendMouseButtonEvent(0, 0, 0, false, game, 0)
+end
+
+Balls.ChildAdded:Connect(function(Ball)
+    if not VerifyBall(Ball) then
+        return
+    end
+
+    local OldPosition = Ball.Position
